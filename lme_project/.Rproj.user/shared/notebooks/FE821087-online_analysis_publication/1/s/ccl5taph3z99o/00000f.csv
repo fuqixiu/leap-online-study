@@ -1,0 +1,11 @@
+"0","library(ggplot2)"
+"0","library(ggeffects)"
+"2","Warning: package ‘ggeffects’ was built under R version 4.3.3"
+"0","library(sjPlot)"
+"2","Warning: package ‘sjPlot’ was built under R version 4.3.3"
+"0","library(effects)"
+"2","Warning: package ‘effects’ was built under R version 4.3.2"
+"2","lattice theme set by effectsTheme()
+See ?effectsTheme for details.
+"
+"0","# Using sjPlot"

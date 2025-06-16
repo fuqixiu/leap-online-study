@@ -1,0 +1,5 @@
+"0","#rm(list = ls())"
+"0","cpath = setwd('C:/Users/fuq01/Documents/GitHub/leap-analysis/prolific_3T_2023/master_data')"
+"2","Warning: The working directory was changed to C:/Users/fuq01/Documents/GitHub/leap-analysis/prolific_3T_2023/master_data inside a notebook chunk. The working directory will be reset when the chunk is finished running. Use the knitr root.dir option in the setup chunk to change the working directory for notebook chunks."
+"0","ug_data = read.csv(""LEAP_baseline_ug_n236_analysis.csv"")"
+"0","rl_data = read.csv(""LEAP_baseline_slot_n220_analysis.csv"")"

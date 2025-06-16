@@ -1,0 +1,7 @@
+"0","# Compute fixed star heights per model"
+"0","y_star_pos <- coef_all %>%"
+"0","  group_by(model) %>%"
+"0","  summarise(y = max(conf.high) + 0.1)"
+"0",""
+"0","coef_all <- left_join(coef_all, y_star_pos, by = ""model"")"
+"0",""

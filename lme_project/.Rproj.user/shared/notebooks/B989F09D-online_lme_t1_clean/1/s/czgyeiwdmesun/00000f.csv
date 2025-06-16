@@ -1,0 +1,7 @@
+"0","ug_data = read.csv(""../data/LEAP_baseline_ug_n236_analysis.csv"")"
+"0","ug_model= read.csv(""../ug_modeling/baseline_fit/UG_fit_FSvarf0_Sep24.csv"") "
+"0",""
+"0","rl_data = read.csv(""../data/LEAP_baseline_rl_n220_analysis.csv"")"
+"0","rl_model= read.csv(""../rl_modeling/baseline_fit/RL_fit_RW_valence_T1_May25.csv"")"
+"0",""
+"0","demo    = read.csv(""../data/LEAP_n236_demographics.csv"")"

@@ -1,0 +1,4 @@
+"0","# LME per block"
+"0","neg_df = subset(rl_data, block_type == 'numberbar_neg')"
+"0","mix_df = subset(rl_data, block_type == 'numberbar_mixed')"
+"0","pos_df = subset(rl_data, block_type == 'numberbar_pos')"

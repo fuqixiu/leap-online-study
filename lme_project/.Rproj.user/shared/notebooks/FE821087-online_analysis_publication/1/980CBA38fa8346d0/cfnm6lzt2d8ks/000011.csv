@@ -1,0 +1,6 @@
+"0","ug.rr = glmer(data = ug_data, "
+"0","                formula = choice_acc ~ depression_mc + anhedonia_mc + depression_mc*anhedonia_mc"
+"0","                + offer #+ depression_mc*offer + anhedonia_mc*offer + depression_mc*anhedonia_mc*offer"
+"0","                + ladder_us + md_anx_prior_diag + female + age"
+"0","                + (1 + offer | participant), # separate assume no correlation between intercept and slope"
+"0","                family = binomial(link = ""logit""), glmerControl(optimizer='bobyqa', optCtrl=list(maxfun=1e6)))"

@@ -1,0 +1,9 @@
+"0","# Get the variables used in the model"
+"0","model_vars <- c(""alpha_pes"", ""depression_mc"", ""anhedonia_mc"", "
+"0","                ""ladder_us"", ""md_anx_prior_diag"", ""female"", ""age"")"
+"0",""
+"0","# Identify rows with ANY missing values in these variables"
+"0","missing_rows <- which(!complete.cases(rl_model[, model_vars]))"
+"2","Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'x' in selecting a method for function 'which': undefined columns selected
+"

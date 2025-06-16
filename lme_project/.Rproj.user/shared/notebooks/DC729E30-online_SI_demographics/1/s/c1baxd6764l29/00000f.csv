@@ -1,0 +1,5 @@
+"0","demo = read.csv(""../data/LEAP_n236_demographics.csv"")"
+"0","demo = var_recode(demo)"
+"0","# mean centering for main effect"
+"0","demo$depression_mc = demo$depression - mean(demo$depression)"
+"0","demo$anhedonia_mc = demo$anhedonia - mean(demo$anhedonia)"

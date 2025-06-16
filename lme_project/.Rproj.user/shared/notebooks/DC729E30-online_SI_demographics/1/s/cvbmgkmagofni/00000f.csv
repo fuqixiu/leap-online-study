@@ -1,0 +1,4 @@
+"0","rm(ug.rt.t3.s1,ug.rt.t3.s2)"
+"2","Error in exists(cacheKey, where = .rs.WorkingDataEnv, inherits = FALSE) : 
+  invalid first argument
+"

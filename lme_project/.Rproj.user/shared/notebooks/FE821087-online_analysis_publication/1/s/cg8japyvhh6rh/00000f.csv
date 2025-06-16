@@ -1,0 +1,10 @@
+"0","library(tibble)"
+"0",""
+"0","coef_all <- bind_rows("
+"0","  extract_coefs(ug.envy, ""alpha""),"
+"0","  extract_coefs(ug.beta, ""beta""),"
+"0","  extract_coefs(ug.f0, ""f0"")"
+"0",")"
+"2","Error in extract_coefs(ug.envy, ""alpha"") : 
+  could not find function ""extract_coefs""
+"

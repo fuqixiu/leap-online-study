@@ -1,0 +1,180 @@
+---
+title: "online demographics analysis"
+output: pdf_document
+date: "2025-04-14"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r load libraries}
+library(dplyr)
+library(car)
+library(lme4)
+library(lmerTest)
+library(Matrix)
+library(tidyr)
+library(readxl)
+library(ggpubr)
+library(interactions)
+library(performance) #checking model performance
+library(margins)
+library(tibble) #plot
+library(ggplot2) #plot
+
+#rm(list = ls())
+```
+```{r}
+#rm(ug.rt.t3.s1) #remove unused variables 
+```
+
+
+# Functions
+```{r functions}
+# Z-score
+normalize = function(x) {
+  return ((x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE))
+}
+
+# Function to recode variables
+var_recode = function(data){
+  data$age_z <- normalize(data$age)
+  data$edu_z <- normalize(data$edu_level)
+  data$income_z <- normalize(data$income_order)
+  data$ses <- data$edu_z + data$income_z
+  data$poc <- ifelse(data$race == "White", 0, 1) # POC coded as 1
+  data$poc <- factor(data$poc)
+  data$female <- ifelse(data$sex == 2, 1, 0)  # Female=1, Male+Other=0
+  #data$female <- ifelse(data$sex == 2, 1, 
+                      #ifelse(data$sex == 3, NA, 0)) # Female coded as 1, Other as NA, Male as 0, row 150
+  data$female = factor(data$female)
+  data$group = factor(data$group, levels = c("Healthy", "Depression", "Anhedonia", "Both"))
+  
+  # mean centering for main effect
+  data$depression_mc = data$depression - mean(data$depression)
+  data$anhedonia_mc = data$anhedonia - mean(data$anhedonia)
+  
+  # raw score
+  data$pvss_reversed <- -data$pvss_total
+  data$bdi_total_z <- scale(data$bdi_total)
+  data$pvss_total_z <- scale(data$pvss_reversed) 
+  
+  return(data)
+}
+
+# Function to extract coefficients from a model
+extract_coefs <- function(model, model_name) {
+  coefs <- summary(model)$coefficients
+  as.data.frame(coefs) %>%
+    rownames_to_column("term") %>%
+    filter(term %in% c("depression_mc", "anhedonia_mc", "depression_mc:anhedonia_mc")) %>%
+    mutate(
+      conf.low = Estimate - `Std. Error`,
+      conf.high = Estimate + `Std. Error`,
+      term_clean = case_when(
+        term == "depression_mc" ~ "depression",
+        term == "anhedonia_mc" ~ "anhedonia",
+        term == "depression_mc:anhedonia_mc" ~ "interaction"
+      ),
+      model = model_name,
+      sig_label = case_when(
+        `Pr(>|t|)` < 0.001 ~ "***",
+        `Pr(>|t|)` < 0.01  ~ "**",
+        `Pr(>|t|)` < 0.05  ~ "*",
+        TRUE ~ ""
+      )
+    ) %>%
+    select(model, term_clean, Estimate, `Std. Error`, conf.low, conf.high, sig_label)
+}
+
+# save stats results 
+save_model_to_excel <- function(model, filename, include_random = TRUE) {
+  library(openxlsx)
+  
+  # Extract fixed effects
+  summary_df <- data.frame(
+    Variable = rownames(summary(model)$coefficients),
+    summary(model)$coefficients,
+    row.names = NULL
+  )
+  
+  # Start with list containing fixed effects
+  output_list <- list(Fixed = summary_df)
+  
+  # Optionally add random effects
+  if (include_random) {
+    random_df <- as.data.frame(VarCorr(model))
+    output_list$Random <- random_df
+  }
+  
+  # Save to Excel
+  write.xlsx(output_list, file = filename, rowNames = FALSE)
+}
+
+```
+# Data load & recode
+```{r}
+demo = read.csv("../data/LEAP_n236_demographics.csv")
+demo = var_recode(demo)
+
+# mean centering for main effect
+demo$depression_mc = demo$depression - mean(demo$depression)
+demo$anhedonia_mc = demo$anhedonia - mean(demo$anhedonia)
+```
+# Demographics analysis
+```{r Demographics: income, education}
+d.kt_income = kruskal.test(income ~ group, data = demo)
+d.kt_edu = kruskal.test(edu_level ~ group, data = demo)
+
+print(d.kt_income)
+print(d.kt_edu)
+```
+```{r Demographics: age, diagnosis, BDI, PVSS}
+d.anova_age = aov(age ~ group, data = demo)
+d.anova_prior_diag = aov(md_anx_prior_diag ~ group, data = demo)
+d.anova_bdi = aov(bdi_total ~ group, data = demo)
+d.anova_pvss = aov(pvss_total ~ group, data = demo)
+
+summary(d.anova_age)
+summary(d.anova_prior_diag)
+summary(d.anova_bdi)
+summary(d.anova_pvss)
+```
+```{r}
+d.anova_age = aov(age ~ depression_mc*anhedonia_mc, data = demo)
+d.anova_prior_diag = aov(md_anx_prior_diag ~ depression_mc*anhedonia_mc, data = demo)
+d.anova_bdi = aov(bdi_total ~ depression_mc*anhedonia_mc, data = demo)
+d.anova_pvss = aov(pvss_total ~ depression_mc*anhedonia_mc, data = demo)
+
+summary(d.anova_age)
+summary(d.anova_prior_diag)
+summary(d.anova_bdi)
+summary(d.anova_pvss)
+```
+```{r Demographics: sex, gender, race}
+table_sex = table(demo$group, demo$sex)
+fisher.test(table_sex)
+
+table_gender = table(demo$group, demo$gender)
+fisher.test(table_gender)
+
+table_race = table(demo$group, demo$race)
+chisq.test(table_race)
+```
+```{r Demographics: multivariate}
+# current psychiatric status
+print("BDI-II ~ demographics")
+d.dep_demo = lm(data = demo,
+               formula = bdi_total ~ age + ses + ladder_us + female + poc + queer + md_anx_prior_diag)
+summary(d.dep_demo)
+
+print("PVSS ~ demographics")
+d.anh_demo = lm(data = demo,
+               formula = pvss_total ~ age + ses + ladder_us + female + poc + queer + md_anx_prior_diag)
+summary(d.anh_demo)
+
+# prior psychiatric history 
+print("prior mood related diagnosis ~ demographics")
+d.demo_ses = lm(data = demo,
+               formula = md_anx_prior_diag ~ age + ses + ladder_us + female + poc + queer)
+summary(d.demo_ses)
+```
