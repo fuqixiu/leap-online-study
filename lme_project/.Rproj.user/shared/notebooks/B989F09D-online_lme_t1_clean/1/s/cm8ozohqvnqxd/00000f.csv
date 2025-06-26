@@ -1,3 +1,0 @@
-"0","# mean centering for main effect"
-"0","rl_model$depression_mc = rl_model$depression - mean(rl_model$depression)"
-"0","rl_model$anhedonia_mc = rl_model$anhedonia - mean(rl_model$anhedonia)"

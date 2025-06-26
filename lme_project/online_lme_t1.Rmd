@@ -199,16 +199,16 @@ performance(ug.f0)
 
 ```{r UG: stats format}
 coef_all <- bind_rows(
+  extract_coefs(ug.f0, "f0"),
   extract_coefs(ug.envy, "envy"),
-  extract_coefs(ug.beta, "beta"),
-  extract_coefs(ug.f0, "f0")
+  extract_coefs(ug.beta, "beta")
 )
 
 # Factor ordering
 coef_all <- coef_all %>%
   mutate(
     term_clean = factor(term_clean, levels = c("depression", "anhedonia", "interaction")),
-    model = factor(model, levels = c("envy", "beta", "f0"))
+    model = factor(model, levels = c("f0", "envy", "beta"))
   )
 
 # Compute fixed star heights per model
@@ -222,23 +222,23 @@ coef_all <- left_join(coef_all, y_star_pos, by = "model")
 ```{r UG: plot setting}
 # Custom fill colors (Pride flag–inspired)
 fill_colors <- c(
-  "depression" = "#5BCEFA",                   # Light blue
-  "interaction" = "#B388EB",                  # Soft purple
-  "anhedonia" = "#F5A9B8"                     # Light pink
+  "depression" = "#abb9f5",  
+  "interaction" = "#5D77EC",
+  "anhedonia" = "#193CD6"
 )
 
 # Custom facet labels
 facet_labels <- c(
+  f0 = "initial norm",
   envy = "norm aversion",
-  beta = "inverse temperature",
-  f0 = "initial norm"
+  beta = "inverse temperature"
 )
 
 # Ensure custom bar order
 coef_all <- coef_all %>%
   mutate(
     term_clean = factor(term_clean, levels = c("depression", "interaction", "anhedonia")),
-    model = factor(model, levels = c("envy", "beta", "f0"))
+    model = factor(model, levels = c("f0", "envy", "beta"))
   )
 ```
 
@@ -248,7 +248,7 @@ ggplot(coef_all, aes(x = term_clean, y = Estimate, fill = term_clean)) +
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1) +
   geom_text(aes(y = y, label = sig_label), size = 10, color = "black") +  # bigger stars
   facet_wrap(~model, labeller = as_labeller(facet_labels), nrow = 1) +    # force 1 row
-  labs(x = NULL, y = "coefficient (baseline)", fill = NULL) +
+  labs(x = NULL, y = "coefficient (UG baseline)", fill = NULL) +
   scale_fill_manual(values = fill_colors) +
   coord_cartesian(clip = "off") +
   theme_minimal(base_size = 18) +  # increase base font size
@@ -373,6 +373,85 @@ summary(rl.beta)
 confint(rl.beta)
 performance(rl.beta)
 ```
+
+
+```{r RL: stats format}
+coef_all <- bind_rows(
+  extract_coefs(rl.alphaneg, "negative alpha"),
+  extract_coefs(rl.alphapos, "positive alpha"),
+  extract_coefs(rl.beta, "inverse temperature")
+)
+
+# Factor ordering
+coef_all <- coef_all %>%
+  mutate(
+    term_clean = factor(term_clean, levels = c("depression", "anhedonia", "interaction")),
+    model = factor(model, levels = c("negative alpha", "positive alpha", "inverse temperature"))
+  )
+
+# Compute fixed star heights per model
+y_star_pos <- coef_all %>%
+  group_by(model) %>%
+  summarise(y = max(conf.high) + 0.1)
+
+coef_all <- left_join(coef_all, y_star_pos, by = "model")
+```
+```{r RL: plot setting}
+# Custom fill colors (Pride flag–inspired)
+fill_colors <- c(
+  "depression" = "#f5abb9",                   # Light blue
+  "interaction" = "#EC5D77",                  # Soft purple
+  "anhedonia" = "#D6193C"                     # Light pink
+)
+
+# Ensure custom bar order
+coef_all <- coef_all %>%
+  mutate(
+    term_clean = factor(term_clean, levels = c("depression", "interaction", "anhedonia")),
+    model = factor(model, levels = c("negative alpha", "positive alpha", "inverse temperature"))
+  )
+```
+
+```{r UG: model figure 4 g-i}
+ggplot(coef_all, aes(x = term_clean, y = Estimate, fill = term_clean)) +
+  geom_bar(stat = "identity", width = 0.55) +  # skinnier bars, less space
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1) +
+  geom_text(aes(y = y, label = sig_label), size = 10, color = "black") +  # bigger stars
+  facet_wrap(~model, nrow = 1) +    # force 1 row
+  labs(x = NULL, y = "coefficient (RL baseline)", fill = NULL) +
+  scale_fill_manual(values = fill_colors) +
+  coord_cartesian(clip = "off") +
+  theme_minimal(base_size = 18) +  # increase base font size
+  theme(
+    panel.grid       = element_blank(),
+    axis.text.x      = element_blank(),
+    axis.ticks.x     = element_blank(),
+    axis.text.y      = element_text(size = 16),
+    axis.title.y     = element_text(size = 18, margin = margin(r = 10)),
+    strip.text       = element_text(size = 18, face = "plain"),
+    legend.position  = "bottom",
+    legend.direction = "horizontal",
+    legend.justification = "left",
+    legend.box       = "horizontal",
+    legend.text      = element_text(size = 16),
+    plot.margin      = margin(10, 10, 10, 10),  # tighter margins
+    strip.placement  = "outside",              # put facet labels outside panels
+    panel.spacing    = unit(0.8, "lines")      # reduce spacing between panels
+  )
+
+```
+```{r RL: figure save}
+ggsave(
+  filename = "./figure/rl_param_effect_T1.jpg",
+  plot = last_plot(),      # or specify your plot object name if assigned
+  width = 14,               # adjust as needed
+  height = 6,              # adjust as needed
+  dpi = 300,
+  units = "in"
+)
+
+```
+
 # Results saving
 ```{r UG SI}
 save_model_to_excel(ug.rt, "../lme_results/ug_T1/ug_rt.xlsx", include_random = TRUE)

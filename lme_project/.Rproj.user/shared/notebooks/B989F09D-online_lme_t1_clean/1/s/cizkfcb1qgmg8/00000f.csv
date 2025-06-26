@@ -1,8 +1,0 @@
-"0","save_model_to_excel(ug.rt, ""../lme_results/ug_T1/ug_rt.xlsx"", include_random = TRUE)"
-"2","Warning: package ‘openxlsx’ was built under R version 4.3.3"
-"0","save_model_to_excel(ug.rr, ""../lme_results/ug_T1/ug_rr.xlsx"", include_random = TRUE)"
-"0","save_model_to_excel(ug.md, ""../lme_results/ug_T1/ug_md.xlsx"", include_random = TRUE)"
-"0",""
-"0","save_model_to_excel(ug.envy, ""../lme_results/ug_T1/ug_envy.xlsx"", include_random = FALSE)"
-"0","save_model_to_excel(ug.beta, ""../lme_results/ug_T1/ug_beta.xlsx"", include_random = FALSE)"
-"0","save_model_to_excel(ug.f0, ""../lme_results/ug_T1/ug_f0.xlsx"", include_random = FALSE)"

@@ -1,3 +1,0 @@
-"0","# mean centering for main effect"
-"0","ug_model$depression_mc = ug_model$depression - mean(ug_model$depression)"
-"0","ug_model$anhedonia_mc = ug_model$anhedonia - mean(ug_model$anhedonia)"
