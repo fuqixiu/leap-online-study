@@ -1,5 +1,5 @@
 "0","ug_data_t3 = read.csv(""../data/LEAP_month1_ug_n129_analysis.csv"")"
-"0","ug_model_t3= read.csv(""../ug_modeling/month1_fit/UG_fit_FSvarf0_T3_May25.csv"")"
+"0","ug_model_t3= read.csv(""../ug_modeling/month1_fit/UG_fit_RWvarf0_T3_May25.csv"")"
 "0",""
 "0","rl_data_t3 = read.csv('../data/LEAP_month1_rl_n125_analysis.csv')"
 "0","rl_model_t3= read.csv(""../rl_modeling/month1_fit/RL_fit_RW_context_T3_May25.csv"")"
