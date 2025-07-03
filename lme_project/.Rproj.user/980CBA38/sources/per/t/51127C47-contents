@@ -109,7 +109,7 @@ save_model_to_excel <- function(model, filename, include_random = TRUE) {
 # Data load & recode
 ```{r Data load}
 ug_data = read.csv("../data/LEAP_baseline_ug_n236_analysis.csv")
-ug_model= read.csv("../ug_modeling/baseline_fit/UG_fit_FSvarf0_Sep24.csv") 
+ug_model= read.csv("../ug_modeling/baseline_fit/UG_fit_RWvarf0_May25.csv") 
 
 rl_data = read.csv("../data/LEAP_baseline_rl_n220_analysis.csv")
 rl_model= read.csv("../rl_modeling/baseline_fit/RL_fit_RW_valence_T1_May25.csv")
@@ -182,12 +182,12 @@ summary(ug.envy)
 confint(ug.envy)
 performance(ug.envy)
 ```
-```{r UG: inverse temperature}
-ug.beta <- lm(data = ug_model, 
-                formula = beta ~ depression_mc + anhedonia_mc + depression_mc*anhedonia_mc)
-summary(ug.beta)
-confint(ug.beta)
-performance(ug.beta)
+```{r UG: learning rate}
+ug.lr <- lm(data = ug_model, 
+                formula = lr ~ depression_mc + anhedonia_mc + depression_mc*anhedonia_mc)
+summary(ug.lr)
+confint(ug.lr)
+performance(ug.lr)
 ```
 ```{r UG: initial norm}
 ug.f0 <- lm(data = ug_model, 
@@ -201,14 +201,14 @@ performance(ug.f0)
 coef_all <- bind_rows(
   extract_coefs(ug.f0, "f0"),
   extract_coefs(ug.envy, "envy"),
-  extract_coefs(ug.beta, "beta")
+  extract_coefs(ug.lr, "alpha")
 )
 
 # Factor ordering
 coef_all <- coef_all %>%
   mutate(
     term_clean = factor(term_clean, levels = c("depression", "anhedonia", "interaction")),
-    model = factor(model, levels = c("f0", "envy", "beta"))
+    model = factor(model, levels = c("f0", "envy", "alpha"))
   )
 
 # Compute fixed star heights per model
@@ -231,14 +231,14 @@ fill_colors <- c(
 facet_labels <- c(
   f0 = "initial norm",
   envy = "norm aversion",
-  beta = "inverse temperature"
+  alpha = "norm update"
 )
 
 # Ensure custom bar order
 coef_all <- coef_all %>%
   mutate(
     term_clean = factor(term_clean, levels = c("depression", "interaction", "anhedonia")),
-    model = factor(model, levels = c("f0", "envy", "beta"))
+    model = factor(model, levels = c("f0", "envy", "alpha"))
   )
 ```
 
@@ -272,14 +272,13 @@ ggplot(coef_all, aes(x = term_clean, y = Estimate, fill = term_clean)) +
 ```
 ```{r UG: figure save}
 ggsave(
-  filename = "./figure/ug_param_effect_T1.jpg",
+  filename = "./figure/ug_param_effect_T1_varf0.jpg",
   plot = last_plot(),      # or specify your plot object name if assigned
   width = 14,               # adjust as needed
   height = 6,              # adjust as needed
   dpi = 300,
   units = "in"
 )
-
 ```
 
 # RL model-agnostic regression
@@ -459,7 +458,7 @@ save_model_to_excel(ug.rr, "../lme_results/ug_T1/ug_rr.xlsx", include_random = T
 save_model_to_excel(ug.md, "../lme_results/ug_T1/ug_md.xlsx", include_random = TRUE)
 
 save_model_to_excel(ug.envy, "../lme_results/ug_T1/ug_envy.xlsx", include_random = FALSE)
-save_model_to_excel(ug.beta, "../lme_results/ug_T1/ug_beta.xlsx", include_random = FALSE)
+save_model_to_excel(ug.lr, "../lme_results/ug_T1/ug_alpha.xlsx", include_random = FALSE)
 save_model_to_excel(ug.f0, "../lme_results/ug_T1/ug_f0.xlsx", include_random = FALSE)
 ```
 
