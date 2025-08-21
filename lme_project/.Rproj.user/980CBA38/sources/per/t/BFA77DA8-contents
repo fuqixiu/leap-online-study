@@ -109,7 +109,7 @@ save_model_to_excel <- function(model, filename, include_random = TRUE) {
 # Data load & recode
 ```{r Data load}
 ug_data_t3 = read.csv("../data/LEAP_month1_ug_n129_analysis.csv")
-ug_model_t3= read.csv("../ug_modeling/month1_fit/UG_fit_FSvarf0_T3_May25.csv")
+ug_model_t3= read.csv("../ug_modeling/month1_fit/UG_fit_RWvarf0_T3_May25.csv")
 
 rl_data_t3 = read.csv('../data/LEAP_month1_rl_n125_analysis.csv')
 rl_model_t3= read.csv("../rl_modeling/month1_fit/RL_fit_RW_context_T3_May25.csv")
@@ -183,11 +183,11 @@ confint(ug.envy.t3)
 performance(ug.envy.t3)
 ```
 ```{r UG: inverse temperature}
-ug.beta.t3 <- lm(data = ug_model_t3, 
-                formula = beta ~ depression_mc + anhedonia_mc + depression_mc*anhedonia_mc)
-summary(ug.beta.t3)
-confint(ug.beta.t3)
-performance(ug.beta.t3)
+ug.lr.t3 <- lm(data = ug_model_t3, 
+                formula = lr ~ depression_mc + anhedonia_mc + depression_mc*anhedonia_mc)
+summary(ug.lr.t3)
+confint(ug.lr.t3)
+performance(ug.lr.t3)
 ```
 ```{r UG: initial norm}
 ug.f0.t3 <- lm(data = ug_model_t3, 
@@ -200,7 +200,7 @@ performance(ug.f0.t3)
 ```{r UG: stats format}
 coef_all <- bind_rows(
   extract_coefs(ug.envy.t3, "envy"),
-  extract_coefs(ug.beta.t3, "beta"),
+  extract_coefs(ug.lr.t3, "alpha"),
   extract_coefs(ug.f0.t3, "f0")
 )
 
@@ -208,7 +208,7 @@ coef_all <- bind_rows(
 coef_all <- coef_all %>%
   mutate(
     term_clean = factor(term_clean, levels = c("depression", "anhedonia", "interaction")),
-    model = factor(model, levels = c("envy", "beta", "f0"))
+    model = factor(model, levels = c("envy", "alpha", "f0"))
   )
 
 # Compute fixed star heights per model
@@ -231,7 +231,7 @@ fill_colors <- c(
 # Custom facet labels
 facet_labels <- c(
   envy = "norm aversion",
-  beta = "inverse temperature",
+  alpha = "norm update",
   f0 = "initial norm"
 )
 
@@ -239,7 +239,7 @@ facet_labels <- c(
 coef_all <- coef_all %>%
   mutate(
     term_clean = factor(term_clean, levels = c("depression", "interaction", "anhedonia")),
-    model = factor(model, levels = c("envy", "beta", "f0"))
+    model = factor(model, levels = c("envy", "alpha", "f0"))
   )
 
 ```
@@ -273,7 +273,7 @@ ggplot(coef_all, aes(x = term_clean, y = Estimate, fill = term_clean)) +
 ```
 ```{r UG: figure save}
 ggsave(
-  filename = "./figure/ug_param_effect_T3.jpg",
+  filename = "./figure/ug_param_effect_T3_varf0.jpg",
   plot = last_plot(),      # or specify your plot object name if assigned
   width = 14,              # adjust as needed
   height = 6,              # adjust as needed
@@ -388,7 +388,7 @@ save_model_to_excel(ug.rr.t3, "../lme_results/ug_T3/ug_rr.xlsx", include_random 
 save_model_to_excel(ug.md.t3, "../lme_results/ug_T3/ug_md.xlsx", include_random = TRUE)
 
 save_model_to_excel(ug.envy.t3, "../lme_results/ug_T3/ug_envy.xlsx", include_random = FALSE)
-save_model_to_excel(ug.beta.t3, "../lme_results/ug_T3/ug_beta.xlsx", include_random = FALSE)
+save_model_to_excel(ug.lr.t3, "../lme_results/ug_T3/ug_alpha.xlsx", include_random = FALSE)
 save_model_to_excel(ug.f0.t3, "../lme_results/ug_T3/ug_f0.xlsx", include_random = FALSE)
 ```
 

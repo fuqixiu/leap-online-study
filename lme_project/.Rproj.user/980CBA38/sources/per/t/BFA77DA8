@@ -3,7 +3,7 @@
     "path": "~/GitHub/leap-online-study/lme_project/online_lme_t3.Rmd",
     "project_path": "online_lme_t3.Rmd",
     "type": "r_markdown",
-    "hash": "2271627956",
+    "hash": "2042357006",
     "contents": "",
     "dirty": false,
     "created": 1750086610639.0,
@@ -18,11 +18,11 @@
         "last_setup_crc32": ""
     },
     "folds": "",
-    "lastKnownWriteTime": 1750087146,
+    "lastKnownWriteTime": 1751481497,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1750087146569,
+    "last_content_update": 1755782896493,
     "read_only": false,
     "read_only_alternatives": []
 }
