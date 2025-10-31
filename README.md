@@ -6,7 +6,7 @@ This repository contains data processing scripts and analysis code for the paper
 ```
 ├── analysis/            # Analysis scripts
 ├── data/                # Processed datasets
-├── figure/             # Scripts or outputs for figures
+├── figure/              # Scripts or outputs for figures
 ├── lme_project/         # Regression model scripts
 ├── lme_results/         # Regression model outputs
 ├── rl_modeling/         # Modeling scripts for reversal learning
