@@ -1,5 +1,5 @@
 # Context-specificity and longitudinal stability of the effects of depressive symptoms on social decision-making
-This repository contains data processing scripts, analysis code, and task materials for the paper:
+This repository contains data processing scripts and analysis code for the paper:
 **“Context-specificity and longitudinal stability of the effects of depressive symptoms on social decision-making”**
 
 ## Repository structure
